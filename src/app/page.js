@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, Sparkles } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
@@ -10,11 +11,18 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
+  const searchSuggestions = [
+    "Movies directed by Tim Burton that star Johnny Depp",
+    "Sci-Fi movies with an IMDB rating of 8 or higher",
+    "Crime movies before the year 1980",
+  ]
+
   // Fetch all movies on page load
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/movies/");
+        // const response = await fetch("http://127.0.0.1:8000/movies/");
+        const response = await fetch("https://rag-backend-production.up.railway.app/movies/");
         const data = await response.json();
         setMovies(data.movies);
       } catch (error) {
@@ -29,14 +37,14 @@ export default function Home() {
   const handleSearch = async (query) => {
     if (!query) {
       // If the search query is empty, fetch all movies again
-      const response = await fetch("http://127.0.0.1:8000/movies/");
+      const response = await fetch("https://rag-backend-production.up.railway.app/movies/");
       const data = await response.json();
       setMovies(data.movies);
       return;
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/movies/search/", {
+      const response = await fetch("https://rag-backend-production.up.railway.app/movies/search/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,8 +86,21 @@ export default function Home() {
               onChange={handleInputChange}
               className="w-full bg-gray-800 text-gray-100 border-gray-700 rounded-full pl-12"
             />
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <SearchIcon type="submit" className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </form>
+        </div>
+        <div className="mb-8 flex flex-col space-y-2" role="list" aria-label="AI-powered search suggestions">
+          {searchSuggestions.map((suggestion) => (
+            <Button
+              key={suggestion}
+              variant="outline"
+              size="sm"
+              className="bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700 justify-start"
+            >
+              <Sparkles className="w-4 h-4 mr-2 text-yellow-400" aria-hidden="true" />
+              <span>{suggestion}</span>
+            </Button>
+          ))}
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {Array.isArray(movies) && movies.length > 0 ? (
