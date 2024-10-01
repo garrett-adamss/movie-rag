@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { SearchIcon, Sparkles } from "lucide-react"
+import { SearchIcon, Sparkles, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation';
 
@@ -69,6 +69,12 @@ export default function Home() {
     setSearchQuery(event.target.value);
   };
 
+  // Handle clearing the search query
+  const handleClearSearch = () => {
+    setSearchQuery(""); // Reset the search query
+    handleSearch(""); // Fetch all movies again
+  };
+
   // Handle card click to navigate to movie details  // Handle card click to navigate to details page
   const handleCardClick = (movie) => {
     router.push(`/details?movieData=${encodeURIComponent(JSON.stringify(movie))}`);
@@ -93,6 +99,12 @@ export default function Home() {
               className="w-full bg-gray-800 text-gray-100 border-gray-700 rounded-full pl-12"
             />
             <SearchIcon onClick={() => handleSearch(searchQuery)} type="button" className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            {searchQuery && (
+              <XCircle
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                onClick={handleClearSearch} // Call handleClearSearch to reset the input and fetch all movies
+              />
+            )}
           </form>
         </div>
         <div className="mb-8 flex flex-col space-y-2" role="list" aria-label="AI-powered search suggestions">
