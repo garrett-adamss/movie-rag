@@ -74,6 +74,12 @@ export default function Home() {
     router.push(`/details?movieData=${encodeURIComponent(JSON.stringify(movie))}`);
   };
 
+  // Handle suggestion click to fill input and submit the form
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion);
+    handleSearch(suggestion)
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
       <div className="max-w-6xl mx-auto">
@@ -86,7 +92,7 @@ export default function Home() {
               onChange={handleInputChange}
               className="w-full bg-gray-800 text-gray-100 border-gray-700 rounded-full pl-12"
             />
-            <SearchIcon type="submit" className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <SearchIcon onClick={() => handleSearch(searchQuery)} type="button" className="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </form>
         </div>
         <div className="mb-8 flex flex-col space-y-2" role="list" aria-label="AI-powered search suggestions">
@@ -96,6 +102,7 @@ export default function Home() {
               variant="outline"
               size="sm"
               className="bg-gray-800 text-gray-100 border-gray-700 hover:bg-gray-700 justify-start"
+              onClick={() => handleSuggestionClick(suggestion)} 
             >
               <Sparkles className="w-4 h-4 mr-2 text-yellow-400" aria-hidden="true" />
               <span>{suggestion}</span>
